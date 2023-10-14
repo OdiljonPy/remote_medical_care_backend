@@ -111,7 +111,7 @@ class Chat(models.Model):
 class MessagesModel(models.Model):
     author = models.IntegerField(default=0)
     text = models.TextField(null=True, blank=True)
-    files = models.FileField(upload_to='chat/')
+    files = models.FileField(upload_to='chat/', null=True, blank=True)
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
 
     created_at = models.DateTimeField(auto_now_add=True)
