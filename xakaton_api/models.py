@@ -71,6 +71,7 @@ class Complain(models.Model):
 
 class EmergenciesHistory(models.Model):
     user = models.IntegerField(default=0)
+    name = models.CharField(max_length=200, null=True, blank=True)
     phone_number = models.CharField(max_length=12, null=True, blank=True)
     age = models.CharField(max_length=20, null=True, blank=True)
     category = models.CharField(max_length=150, null=True, blank=True)
