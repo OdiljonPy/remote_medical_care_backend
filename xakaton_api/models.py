@@ -70,6 +70,8 @@ class Complain(models.Model):
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
     category = models.ForeignKey(DiseaseStateCategoryModel, on_delete=models.CASCADE)
     specialist = models.ForeignKey(Specialist, on_delete=models.CASCADE)
+    text = models.TextField(null=True, blank=True)
+    analizlar = models.TextField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
