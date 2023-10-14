@@ -11,3 +11,4 @@ sqlparse==0.4.4
 uritemplate==4.1.1
 
 psycopg2-binary
+django-modeltranslation
