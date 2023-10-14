@@ -4,7 +4,7 @@ from django.db import models
 class UserModel(models.Model):
     name = models.CharField(max_length=150, null=True, blank=True)
     user_id = models.IntegerField(default=0)
-    username = models.CharField(max_length=150, default=None)
+    username = models.CharField(max_length=150, null=True, blank=True)
     phone_number = models.CharField(max_length=12)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -21,7 +21,7 @@ class UserModel(models.Model):
 
 class EmergenciesPostModel(models.Model):
     image = models.ImageField(upload_to="image/", null=True, blank=True)
-    video = models.FileField(upload_to="video/")
+    video = models.FileField(upload_to="video/", null=True, blank=True)
     category = models.CharField(max_length=150)
 
     created_at = models.DateTimeField(auto_now_add=True)
