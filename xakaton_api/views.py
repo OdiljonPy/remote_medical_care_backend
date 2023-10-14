@@ -143,7 +143,8 @@ def chat_view(request):
 @api_view(["POST"])
 def voice_or_text(request):
     import openai
-    OPEN_AI_API_KEY = "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"
+    # OPEN_AI_API_KEY = "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"
+    OPEN_AI_API_KEY = "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"
     openai.api_key = OPEN_AI_API_KEY
 
     print(request.body)
