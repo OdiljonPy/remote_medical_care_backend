@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     "drf_yasg",
     "rest_framework",
 
+    "xakaton_api"
+
 ]
 
 MIDDLEWARE = [
