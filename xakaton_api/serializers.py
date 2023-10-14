@@ -40,5 +40,5 @@ class SpecialistSerializer(serializers.ModelSerializer):
 
 class HistorySerializers(serializers.ModelSerializer):
     class Meta:
-        model = Specialist
+        model = EmergenciesHistory
         fields = ["id", "user", "phone_number", "age", "category", "latitude", "longitude"]
