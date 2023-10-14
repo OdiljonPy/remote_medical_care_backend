@@ -156,7 +156,7 @@ class MessagesViewSet(ViewSet):
     )
     def create(self, request):
         data = request.data
-        serializer = ChatSerializers(data=data)
+        serializer = MessagesModelSerializers(data=data)
 
         if serializer.is_valid():
             serializer.save()
