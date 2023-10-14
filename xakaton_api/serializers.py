@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserModel, EmergenciesPostModel, DiseaseStateCategoryModel, Complain, Specialist
+from .models import UserModel, EmergenciesPostModel, DiseaseStateCategoryModel, Complain, Specialist, EmergenciesHistory
 
 
 class UserModelSerializer(serializers.ModelSerializer):
@@ -36,3 +36,9 @@ class SpecialistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Specialist
         fields = ["id", "user", "name", "phone_number", "is_active"]
+
+
+class HistorySerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Specialist
+        fields = ["id", "user", "phone_number", "age", "category", "latitude", "longitude"]

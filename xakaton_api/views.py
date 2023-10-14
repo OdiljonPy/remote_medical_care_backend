@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from drf_yasg.utils import swagger_auto_schema
 from .models import UserModel, EmergenciesPostModel, DiseaseStateCategoryModel
 from .serializers import UserModelSerializer, EmergenciesPostModelSerializer, \
-    DiseaseStateCategoryModelSerializer, ComplainSerializer, EmergenciesPostDetailSerializer
+    DiseaseStateCategoryModelSerializer, ComplainSerializer, EmergenciesPostDetailSerializer, HistorySerializers
 
 
 class CreateUser(ViewSet):
@@ -115,6 +115,25 @@ def get_by_list(request, name: str):
         return Response(EmergenciesPostDetailSerializer(post_ru).data, status=status.HTTP_200_OK)
     else:
         return Response({"error": f"{name} category not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class EmergenciesHistoryViewSet(ViewSet):
+
+    @swagger_auto_schema(
+        operation_description="Create a new EmergenciesHistory instance",
+        request_body=HistorySerializers,
+        responses={201: HistorySerializers()},
+    )
+    def create(self, request):
+        data = request.data
+        serializer = HistorySerializers(data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def chat_view(request):
