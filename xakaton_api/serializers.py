@@ -5,13 +5,13 @@ from .models import UserModel, EmergenciesPostModel, DiseaseStateCategoryModel, 
 class UserModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
-        fields = ["id", "name", "username", "user_id", "phone_number"]
+        fields = ["id", "name", "username", "user_id", "phone_number", "language"]
 
 
 class EmergenciesPostModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmergenciesPostModel
-        fields = ["id", "category"]
+        fields = ["id", "category", "category_uz", "category_ru"]
 
 
 class EmergenciesPostDetailSerializer(serializers.ModelSerializer):
@@ -23,7 +23,7 @@ class EmergenciesPostDetailSerializer(serializers.ModelSerializer):
 class DiseaseStateCategoryModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = DiseaseStateCategoryModel
-        fields = ["id", "name_disease"]
+        fields = ["id", "name_disease", "name_disease_uz", "name_disease_ru"]
 
 
 class ComplainSerializer(serializers.ModelSerializer):

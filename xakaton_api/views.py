@@ -30,9 +30,33 @@ class CreateUser(ViewSet):
     def retrieve(self, request, pk=None):
         user = UserModel.get_by_user_id(pk)
         if user:
-            return Response({"result": True})
+            return Response({"result": True, "user": UserModelSerializer(user).data})
 
-        return Response({"result": False})
+        return Response({"result": False, "user": None})
+
+    @swagger_auto_schema(
+        operation_description="Update a User instance by user_id",
+        request_body=UserModelSerializer,
+        responses={200: UserModelSerializer()},
+    )
+    def update(self, request, pk=None):
+        try:
+            user = UserModel.objects.get(user_id=pk)
+        except UserModel.DoesNotExist:
+            return Response({"result": False, "message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserModelSerializer(user, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            # Check if any fields have changed
+            if any(getattr(user, field) != serializer.validated_data.get(field) for field in
+                   serializer.validated_data.keys()):
+                serializer.save()
+                return Response({"result": True, "user": UserModelSerializer(user).data}, status=status.HTTP_200_OK)
+            else:
+                return Response({"result": True, "message": "No fields have changed. User not updated."})
+        else:
+            return Response({"result": False, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class EmergenciesViewSet(ViewSet):
@@ -80,8 +104,17 @@ class ComplainViewSet(ViewSet):
 
 @api_view(["GET"])
 def get_by_list(request, name: str):
-    post = EmergenciesPostModel.objects.filter(category=name)
-    return Response(EmergenciesPostDetailSerializer(post, many=True).data, status=status.HTTP_200_OK)
+    post = EmergenciesPostModel.objects.filter(category=name).first()
+    post_uz = EmergenciesPostModel.objects.filter(category_uz=name).first()
+    post_ru = EmergenciesPostModel.objects.filter(category_ru=name).first()
+    if post:
+        return Response(EmergenciesPostDetailSerializer(post, many=True).data, status=status.HTTP_200_OK)
+    elif post_uz:
+        return Response(EmergenciesPostDetailSerializer(post_uz, many=True).data, status=status.HTTP_200_OK)
+    elif post_ru:
+        return Response(EmergenciesPostDetailSerializer(post_ru, many=True).data, status=status.HTTP_200_OK)
+    else:
+        return Response({"error": f"{name} category not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 def chat_view(request):
