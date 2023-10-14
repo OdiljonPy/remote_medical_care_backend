@@ -8,9 +8,6 @@ from .serializers import UserModelSerializer, EmergenciesPostModelSerializer, \
     DiseaseStateCategoryModelSerializer, ComplainSerializer
 
 
-# Create your views here.
-
-
 class CreateUser(ViewSet):
 
     @swagger_auto_schema(
@@ -78,3 +75,7 @@ class ComplainViewSet(ViewSet):
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def chat_view(request):
+    return render(request, "chat.html")
