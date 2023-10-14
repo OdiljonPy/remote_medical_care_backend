@@ -94,14 +94,17 @@ class ComplainViewSet(ViewSet):
         data = request.data
         user_id = request.data.get("user")
         user = UserModel.get_by_user_id(user_id=user_id)
-        request.data["user"] = user.id
+        print(f"before: {data}")
+        data["user"] = user.id
         category = DiseaseStateCategoryModel.get_by_name_disease(request.data.get("category"))
         spec = Specialist.objects.filter(is_active=True, tag=category.id).first()
         obj = Chat.objects.create(doctor_id=spec.user, patient_id=user_id, is_active=True)
         obj.save()
 
-        request.data["category"] = category.id
-        request.data["specialist"] = spec.id
+        data["category"] = category.id
+        data["specialist"] = spec.id
+        print(f"after: {data}")
+
         serializer = ComplainSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
