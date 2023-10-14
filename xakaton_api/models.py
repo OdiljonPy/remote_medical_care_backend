@@ -64,4 +64,4 @@ class Complain(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.user.user_id
+        return str(self.user.user_id)

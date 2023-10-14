@@ -19,6 +19,7 @@ class CreateUser(ViewSet):
     def create(self, request):
         data = request.data
         serializer = UserModelSerializer(data=data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -65,6 +66,9 @@ class ComplainViewSet(ViewSet):
     )
     def create(self, request):
         data = request.data
+        user_id = request.data.get("user")
+        user = UserModel.get_by_user_id(user_id=user_id)
+        request.data["user"] = user
         serializer = ComplainSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
