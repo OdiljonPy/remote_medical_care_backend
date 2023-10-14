@@ -71,6 +71,7 @@ class Complain(models.Model):
 
 class EmergenciesHistory(models.Model):
     user = models.IntegerField(default=0)
+    name = models.CharField(max_length=200, null=True, blank=True)
     phone_number = models.CharField(max_length=12, null=True, blank=True)
     age = models.CharField(max_length=20, null=True, blank=True)
     category = models.CharField(max_length=150, null=True, blank=True)
@@ -82,3 +83,28 @@ class EmergenciesHistory(models.Model):
 
     def __str__(self):
         return f"{self.user}"
+
+
+class Chat(models.Model):
+    doctor_id = models.IntegerField(default=0)
+    patient_id = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Chat_id: {self.id}"
+
+
+class MessagesModel(models.Model):
+    author = models.IntegerField(default=0)
+    text = models.TextField(null=True, blank=True)
+    files = models.FileField(upload_to='chat/')
+    chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"author: {self.author}"
