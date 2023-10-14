@@ -108,11 +108,11 @@ def get_by_list(request, name: str):
     post_uz = EmergenciesPostModel.objects.filter(category_uz=name).first()
     post_ru = EmergenciesPostModel.objects.filter(category_ru=name).first()
     if post:
-        return Response(EmergenciesPostDetailSerializer(post, many=True).data, status=status.HTTP_200_OK)
+        return Response(EmergenciesPostDetailSerializer(post).data, status=status.HTTP_200_OK)
     elif post_uz:
-        return Response(EmergenciesPostDetailSerializer(post_uz, many=True).data, status=status.HTTP_200_OK)
+        return Response(EmergenciesPostDetailSerializer(post_uz).data, status=status.HTTP_200_OK)
     elif post_ru:
-        return Response(EmergenciesPostDetailSerializer(post_ru, many=True).data, status=status.HTTP_200_OK)
+        return Response(EmergenciesPostDetailSerializer(post_ru).data, status=status.HTTP_200_OK)
     else:
         return Response({"error": f"{name} category not found"}, status=status.HTTP_404_NOT_FOUND)
 
