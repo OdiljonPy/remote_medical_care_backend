@@ -15,7 +15,6 @@ class CreateUser(ViewSet):
         request_body=UserModelSerializer,
         responses={201: UserModelSerializer()},
     )
-
     def create(self, request):
         data = request.data
         serializer = UserModelSerializer(data)
@@ -40,10 +39,9 @@ class EmergenciesViewSet(ViewSet):
         operation_description="List of Emergencies instances",
         responses={200: EmergenciesPostModelSerializer(many=True)},
     )
-
     def list(self, request):
         post = EmergenciesPostModel.objects.all()
-        return Response(EmergenciesPostModelSerializer(post, many=True), status=status.HTTP_200_OK)
+        return Response(EmergenciesPostModelSerializer(post, many=True).data, status=status.HTTP_200_OK)
 
 
 class DiseaseStateViewSet(ViewSet):
@@ -52,10 +50,9 @@ class DiseaseStateViewSet(ViewSet):
         operation_description="List of DiseaseState instances",
         responses={200: DiseaseStateCategoryModelSerializer(many=True)},
     )
-
     def list(self, request):
         post = DiseaseStateCategoryModel.objects.all()
-        return Response(DiseaseStateCategoryModelSerializer(post, many=True), status=status.HTTP_200_OK)
+        return Response(DiseaseStateCategoryModelSerializer(post, many=True).data, status=status.HTTP_200_OK)
 
 
 class ComplainViewSet(ViewSet):
@@ -65,7 +62,6 @@ class ComplainViewSet(ViewSet):
         request_body=ComplainSerializer,
         responses={201: ComplainSerializer()},
     )
-
     def create(self, request):
         data = request.data
         serializer = ComplainSerializer(data)
