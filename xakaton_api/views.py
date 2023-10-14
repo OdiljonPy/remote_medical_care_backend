@@ -95,11 +95,12 @@ class ComplainViewSet(ViewSet):
         user_id = request.data.get("user")
         user = UserModel.get_by_user_id(user_id=user_id)
         request.data["user"] = user.id
-        spec = Specialist.objects.filter(tag__specialist__in=request.data.get("category")).first()
-        obj = Chat.objects.create(spec.user, user_id)
-        obj.save()
         category = DiseaseStateCategoryModel.get_by_name_disease(request.data.get("category"))
-        request.data["category"] = category
+        spec = Specialist.objects.filter(is_active=True, tag=category.id).first()
+        obj = Chat.objects.create(doctor_id=spec.user, patient_id=user_id, is_active=True)
+        obj.save()
+
+        request.data["category"] = category.id
         request.data["specialist"] = spec.id
         serializer = ComplainSerializer(data=data)
         if serializer.is_valid():
@@ -168,6 +169,12 @@ class MessagesViewSet(ViewSet):
     def retrieve(self, request, pk=None):
         messages = MessagesModel.objects.filter(chat=pk).order_by("-created_at")
         return Response(MessagesModelSerializers(messages, many=True).data, status=status.HTTP_200_OK)
+
+
+class ChatList(ViewSet):
+    def retrieve(self, request, pk=None):
+        messages = Chat.objects.filter(doctor_id=pk).order_by("-created_at")
+        return Response(ChatSerializers(messages, many=True).data, status=status.HTTP_200_OK)
 
 
 def chat_view(request):
