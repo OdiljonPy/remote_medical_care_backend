@@ -22,6 +22,7 @@ from drf_yasg import openapi
 from xakaton_api import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.static import serve
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -46,6 +47,8 @@ urlpatterns = [
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    re_path(r'static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
+    re_path(r'media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 
 ]
 
