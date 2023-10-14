@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
+from rest_framework.decorators import api_view
 from drf_yasg.utils import swagger_auto_schema
 from .models import UserModel, EmergenciesPostModel, DiseaseStateCategoryModel
 from .serializers import UserModelSerializer, EmergenciesPostModelSerializer, \
@@ -43,10 +44,6 @@ class EmergenciesViewSet(ViewSet):
         post = EmergenciesPostModel.objects.all()
         return Response(EmergenciesPostModelSerializer(post, many=True).data, status=status.HTTP_200_OK)
 
-    def get_by_list(self, request, name: str):
-        post = EmergenciesPostModel.objects.filter(category=name)
-        return Response(EmergenciesPostDetailSerializer(post, many=True).data, status=status.HTTP_200_OK)
-
 
 class DiseaseStateViewSet(ViewSet):
 
@@ -68,13 +65,19 @@ class ComplainViewSet(ViewSet):
     )
     def create(self, request):
         data = request.data
-        serializer = ComplainSerializer(data)
+        serializer = ComplainSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+def get_by_list(request, name: str):
+    post = EmergenciesPostModel.objects.filter(category=name)
+    return Response(EmergenciesPostDetailSerializer(post, many=True).data, status=status.HTTP_200_OK)
 
 
 def chat_view(request):
