@@ -7,7 +7,7 @@ from drf_yasg.utils import swagger_auto_schema
 from .models import UserModel, EmergenciesPostModel, DiseaseStateCategoryModel
 from .serializers import UserModelSerializer, EmergenciesPostModelSerializer, \
     DiseaseStateCategoryModelSerializer, ComplainSerializer, EmergenciesPostDetailSerializer, HistorySerializers
-
+import json
 
 class CreateUser(ViewSet):
 
@@ -146,7 +146,11 @@ def voice_or_text(request):
     OPEN_AI_API_KEY = "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"
     openai.api_key = OPEN_AI_API_KEY
 
-    data = request.body.json()
+    print(request.body)
+
+    data = request.body
+    data = json.load(data)
+    print(data)
     # voice_url = data.get("voice")
 
     # if voice_url:
