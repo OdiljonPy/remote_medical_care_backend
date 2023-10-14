@@ -68,7 +68,7 @@ class ComplainViewSet(ViewSet):
         data = request.data
         user_id = request.data.get("user")
         user = UserModel.get_by_user_id(user_id=user_id)
-        request.data["user"] = user
+        request.data["user"] = user.id
         serializer = ComplainSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
