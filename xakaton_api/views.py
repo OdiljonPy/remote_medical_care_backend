@@ -9,6 +9,7 @@ from .serializers import UserModelSerializer, EmergenciesPostModelSerializer, \
     DiseaseStateCategoryModelSerializer, ComplainSerializer, EmergenciesPostDetailSerializer, HistorySerializers
 import json
 
+
 class CreateUser(ViewSet):
 
     @swagger_auto_schema(
@@ -187,14 +188,14 @@ def voice_or_text(request):
         categories = [name.name_disease_ru for name in DiseaseStateCategoryModel.objects.all()]
 
     categories_str = ','.join(categories)
-    chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo",
-                                                   messages=[
-                                                       {"role": "user",
-                                                        "content": f"I have these categories: [{categories_str}] and "
-                                                                   f"my patient sends this text as complaint: {text}. "
-                                                                   f"Based on the patient's text, determine which "
-                                                                   f"category it should fit more closely. and return "
-                                                                   f"me that category name"}
-                                                   ])
+    chat_completion = openai.Completion.create(model="text-davinci-003",
+                                               prompt=f"I have these categories: [{categories_str}] and "
+                                                      f"my patient sends this text as complaint: {text}. "
+                                                      f"Based on the patient's text, determine which "
+                                                      f"category it should fit more closely. and return "
+                                                      f"me that category name",
+                                               temperature=0.6,
+                                               max_tokens=1024
+                                               )
     print(chat_completion)
     return Response({"status": "ok"})
