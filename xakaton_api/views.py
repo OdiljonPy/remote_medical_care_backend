@@ -8,6 +8,7 @@ from .models import UserModel, EmergenciesPostModel, DiseaseStateCategoryModel, 
 from .serializers import UserModelSerializer, EmergenciesPostModelSerializer, \
     DiseaseStateCategoryModelSerializer, ComplainSerializer, EmergenciesPostDetailSerializer, HistorySerializers, \
     ChatSerializers, MessagesModelSerializers
+import json
 
 
 class CreateUser(ViewSet):
@@ -170,3 +171,63 @@ class MessagesViewSet(ViewSet):
 
 def chat_view(request):
     return render(request, "chat.html")
+
+
+@api_view(["POST"])
+def voice_or_text(request):
+    import openai
+    # OPEN_AI_API_KEY = "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"
+    OPEN_AI_API_KEY = "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"
+    openai.api_key = OPEN_AI_API_KEY
+
+    print(request.body)
+
+    data = request.body
+    data = json.loads(data)
+    print(data)
+    # voice_url = data.get("voice")
+
+    # if voice_url:
+    #
+    #     import speech_recognition as sr
+    #
+    #     recognizer = sr.Recognizer()
+    #
+    #     with sr.AudioFile('audio.ogg') as source:
+    #         audio = recognizer.record(source)
+    #
+    #     try:
+    #         text = recognizer.recognize_google(audio)
+    #         # update.message.reply_text(f"Transcription: {text}")
+    #     except sr.UnknownValueError:
+    #         pass
+    #         # update.message.reply_text("Sorry, I couldn't understand the audio.")
+    #     except sr.RequestError:
+    #         pass
+    #         # update.message.reply_text("I'm having trouble connecting to the speech recognition service.")
+    #
+    # else:
+    #     text = data.get("text")
+
+    # here we detect
+    user_id = data.get("user_id")
+    text = data.get("text")
+
+    user_obj = UserModel.objects.filter(user_id=user_id).first()
+    if user_obj.language == 'uz':
+        categories = [name.name_disease_uz for name in DiseaseStateCategoryModel.objects.all()]
+    else:
+        categories = [name.name_disease_ru for name in DiseaseStateCategoryModel.objects.all()]
+
+    categories_str = ','.join(categories)
+    chat_completion = openai.Completion.create(model="text-davinci-003",
+                                               prompt=f"I have these categories: [{categories_str}] and "
+                                                      f"my patient sends this text as complaint: {text}. "
+                                                      f"Based on the patient's text, determine which "
+                                                      f"category it should fit more closely. and return "
+                                                      f"me that category name",
+                                               temperature=0.6,
+                                               max_tokens=1024
+                                               )
+    print(chat_completion)
+    return Response({"status": "ok"})
