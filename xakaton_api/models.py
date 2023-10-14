@@ -13,7 +13,7 @@ class UserModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return f"name: {self.name}"
 
     @staticmethod
     def get_by_user_id(user_id: int):
@@ -66,7 +66,7 @@ class Complain(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.user.user_id}"
+        return f"user: {self.user.user_id}"
 
 
 class EmergenciesHistory(models.Model):
