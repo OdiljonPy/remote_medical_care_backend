@@ -138,3 +138,58 @@ class EmergenciesHistoryViewSet(ViewSet):
 
 def chat_view(request):
     return render(request, "chat.html")
+
+
+@api_view(["POST"])
+def voice_or_text(request):
+    import openai
+    OPEN_AI_API_KEY = "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"
+    openai.api_key = OPEN_AI_API_KEY
+
+    data = request.body.json()
+    # voice_url = data.get("voice")
+
+    # if voice_url:
+    #
+    #     import speech_recognition as sr
+    #
+    #     recognizer = sr.Recognizer()
+    #
+    #     with sr.AudioFile('audio.ogg') as source:
+    #         audio = recognizer.record(source)
+    #
+    #     try:
+    #         text = recognizer.recognize_google(audio)
+    #         # update.message.reply_text(f"Transcription: {text}")
+    #     except sr.UnknownValueError:
+    #         pass
+    #         # update.message.reply_text("Sorry, I couldn't understand the audio.")
+    #     except sr.RequestError:
+    #         pass
+    #         # update.message.reply_text("I'm having trouble connecting to the speech recognition service.")
+    #
+    # else:
+    #     text = data.get("text")
+
+    # here we detect
+    user_id = data.get("user_id")
+    text = data.get("text")
+
+    user_obj = UserModel.objects.filter(user_id=user_id).first()
+    if user_obj.language == 'uz':
+        categories = [name.name_disease_uz for name in DiseaseStateCategoryModel.objects.all()]
+    else:
+        categories = [name.name_disease_ru for name in DiseaseStateCategoryModel.objects.all()]
+
+    categories_str = ','.join(categories)
+    chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo",
+                                                   messages=[
+                                                       {"role": "user",
+                                                        "content": f"I have these categories: [{categories_str}] and "
+                                                                   f"my patient sends this text as complaint: {text}. "
+                                                                   f"Based on the patient's text, determine which "
+                                                                   f"category it should fit more closely. and return "
+                                                                   f"me that category name"}
+                                                   ])
+    print(chat_completion)
+    return Response({"status": "ok"})
