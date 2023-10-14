@@ -23,6 +23,7 @@ class EmergenciesPostModel(models.Model):
     image = models.ImageField(upload_to="image/", null=True, blank=True)
     video = models.FileField(upload_to="video/")
     category = models.CharField(max_length=150)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
