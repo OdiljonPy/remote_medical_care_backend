@@ -43,8 +43,8 @@ class EmergenciesViewSet(ViewSet):
         post = EmergenciesPostModel.objects.all()
         return Response(EmergenciesPostModelSerializer(post, many=True).data, status=status.HTTP_200_OK)
 
-    def retrieve(self, request, category: str = None):
-        post = EmergenciesPostModel.objects.filter(category=category)
+    def get_by_list(self, request, name: str):
+        post = EmergenciesPostModel.objects.filter(category=name)
         return Response(EmergenciesPostDetailSerializer(post, many=True).data, status=status.HTTP_200_OK)
 
 
