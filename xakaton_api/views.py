@@ -5,7 +5,7 @@ from rest_framework.viewsets import ViewSet
 from drf_yasg.utils import swagger_auto_schema
 from .models import UserModel, EmergenciesPostModel, DiseaseStateCategoryModel
 from .serializers import UserModelSerializer, EmergenciesPostModelSerializer, \
-    DiseaseStateCategoryModelSerializer, ComplainSerializer
+    DiseaseStateCategoryModelSerializer, ComplainSerializer, EmergenciesPostDetailSerializer
 
 
 class CreateUser(ViewSet):
@@ -17,7 +17,7 @@ class CreateUser(ViewSet):
     )
     def create(self, request):
         data = request.data
-        serializer = UserModelSerializer(data)
+        serializer = UserModelSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -42,6 +42,10 @@ class EmergenciesViewSet(ViewSet):
     def list(self, request):
         post = EmergenciesPostModel.objects.all()
         return Response(EmergenciesPostModelSerializer(post, many=True).data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, category: str = None):
+        post = EmergenciesPostModel.objects.filter(category=category)
+        return Response(EmergenciesPostDetailSerializer(post, many=True).data, status=status.HTTP_200_OK)
 
 
 class DiseaseStateViewSet(ViewSet):

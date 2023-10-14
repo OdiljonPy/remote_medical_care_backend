@@ -11,7 +11,13 @@ class UserModelSerializer(serializers.ModelSerializer):
 class EmergenciesPostModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmergenciesPostModel
-        fields = ["id", "image", "video", "category"]
+        fields = ["id", "category"]
+
+
+class EmergenciesPostDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmergenciesPostModel
+        fields = ["image", "video", ]
 
 
 class DiseaseStateCategoryModelSerializer(serializers.ModelSerializer):
