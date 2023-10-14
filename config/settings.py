@@ -29,6 +29,8 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'modeltranslation',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -117,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'uz-uz'
 
 TIME_ZONE = 'Asia/Tashkent'
 
@@ -133,11 +135,18 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
 
-
 STATIC_ROOT = 'staticfiles'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = 'media'
+
+gettext = lambda s: s
+LANGUAGES = (
+    ('uz', gettext('Uzbek')),
+    ('ru', gettext('Russian'))
+)
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'uz'
+MODELTRANSLATION_LANGUAGES = ('uz', 'ru')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
