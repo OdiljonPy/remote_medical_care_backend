@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import UserModel, DiseaseStateCategoryModel, EmergenciesPostModel, Specialist, Complain
+from .models import UserModel, DiseaseStateCategoryModel, EmergenciesPostModel, Specialist, Complain, \
+    EmergenciesHistory, Chat, MessagesModel
 
 
 # Register your models here.
@@ -28,3 +29,18 @@ class DiseaseStateCategoryModelAdmin(admin.ModelAdmin):
 @admin.register(Complain)
 class ComplainAdmin(admin.ModelAdmin):
     list_display = ["user", "category", "specialist"]
+
+
+@admin.register(EmergenciesHistory)
+class EmergenciesHistoryAdmin(admin.ModelAdmin):
+    list_display = ["id", "user", "phone_number", "age", "category", "latitude", "longitude"]
+
+
+@admin.register(Chat)
+class ChatAdmin(admin.ModelAdmin):
+    list_display = ["id", "doctor_id", "patient_id", "is_active"]
+
+
+@admin.register(MessagesModel)
+class MessagesModelAdmin(admin.ModelAdmin):
+    list_display = ["id", "author", "text", "files", "chat", "created_at"]

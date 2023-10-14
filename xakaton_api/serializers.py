@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import UserModel, EmergenciesPostModel, DiseaseStateCategoryModel, Complain, Specialist, EmergenciesHistory
+from .models import UserModel, EmergenciesPostModel, DiseaseStateCategoryModel, Complain, Specialist, \
+    EmergenciesHistory, Chat, MessagesModel
 
 
 class UserModelSerializer(serializers.ModelSerializer):
@@ -42,3 +43,15 @@ class HistorySerializers(serializers.ModelSerializer):
     class Meta:
         model = EmergenciesHistory
         fields = ["id", "user", "phone_number", "age", "category", "latitude", "longitude"]
+
+
+class ChatSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Chat
+        fields = ["id", "doctor_id", "patient_id", "is_active"]
+
+
+class MessagesModelSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = MessagesModel
+        fields = ["id", "author", "text", "files", "chat", "created_at"]
