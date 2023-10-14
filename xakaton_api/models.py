@@ -42,12 +42,21 @@ class DiseaseStateCategoryModel(models.Model):
     def __str__(self):
         return self.name_disease
 
+    @staticmethod
+    def get_by_name_disease(name_disease: str):
+        obj_uz = DiseaseStateCategoryModel.objects.filter(name_disease_uz=name_disease).first()
+        obj_ru = DiseaseStateCategoryModel.objects.filter(name_disease_ru=name_disease).first()
+        if obj_uz:
+            return obj_uz
+        elif obj_ru:
+            return obj_ru
+
 
 class Specialist(models.Model):
     user = models.IntegerField(default=0)
     name = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=12, blank=True, null=True)
-
+    tag = models.ManyToManyField(DiseaseStateCategoryModel)
     is_active = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

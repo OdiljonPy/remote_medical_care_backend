@@ -4,9 +4,10 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from rest_framework.decorators import api_view
 from drf_yasg.utils import swagger_auto_schema
-from .models import UserModel, EmergenciesPostModel, DiseaseStateCategoryModel
+from .models import UserModel, EmergenciesPostModel, DiseaseStateCategoryModel, Chat, MessagesModel, Specialist
 from .serializers import UserModelSerializer, EmergenciesPostModelSerializer, \
-    DiseaseStateCategoryModelSerializer, ComplainSerializer, EmergenciesPostDetailSerializer, HistorySerializers
+    DiseaseStateCategoryModelSerializer, ComplainSerializer, EmergenciesPostDetailSerializer, HistorySerializers, \
+    ChatSerializers, MessagesModelSerializers
 
 
 class CreateUser(ViewSet):
@@ -94,6 +95,11 @@ class ComplainViewSet(ViewSet):
         user = UserModel.get_by_user_id(user_id=user_id)
         request.data["user"] = user.id
         serializer = ComplainSerializer(data=data)
+
+        spec = Specialist.objects.filter(tag__specialist__in=request.data.get("category")).first()
+        obj = Chat.objects.create(spec.user, user_id)
+        obj.save()
+        request.data["category"] = DiseaseStateCategoryModel.get_by_name_disease(request.data.get("category")).id
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -134,6 +140,32 @@ class EmergenciesHistoryViewSet(ViewSet):
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MessagesViewSet(ViewSet):
+    @swagger_auto_schema(
+        operation_description="Create a new MessagesModel instance",
+        request_body=MessagesModelSerializers,
+        responses={201: MessagesModelSerializers()},
+    )
+    def create(self, request):
+        data = request.data
+        serializer = ChatSerializers(data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(
+        operation_description="List by cat_id MessagesModel instances",
+        responses={200: MessagesModelSerializers(many=True)},
+    )
+    def retrieve(self, request, pk=None):
+        messages = MessagesModel.objects.filter(chat=pk).order_by("-created_at")
+        return Response(MessagesModelSerializers(messages, many=True).data, status=status.HTTP_200_OK)
 
 
 def chat_view(request):
