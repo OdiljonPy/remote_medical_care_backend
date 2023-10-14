@@ -149,7 +149,7 @@ def voice_or_text(request):
     print(request.body)
 
     data = request.body
-    data = json.load(data)
+    data = json.loads(data)
     print(data)
     # voice_url = data.get("voice")
 
