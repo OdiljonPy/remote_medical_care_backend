@@ -1,14 +1,17 @@
+import json
+
 from django.shortcuts import render
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from rest_framework.decorators import api_view
-from drf_yasg.utils import swagger_auto_schema
-from .models import UserModel, EmergenciesPostModel, DiseaseStateCategoryModel, Chat, MessagesModel, Specialist
+
+from .models import UserModel, EmergenciesPostModel, DiseaseStateCategoryModel, Chat, MessagesModel, Specialist, \
+    Complain
 from .serializers import UserModelSerializer, EmergenciesPostModelSerializer, \
     DiseaseStateCategoryModelSerializer, ComplainSerializer, EmergenciesPostDetailSerializer, HistorySerializers, \
     ChatSerializers, MessagesModelSerializers
-import json
 
 
 class CreateUser(ViewSet):
@@ -94,20 +97,19 @@ class ComplainViewSet(ViewSet):
         data = request.data
         user_id = request.data.get("user")
         user = UserModel.get_by_user_id(user_id=user_id)
-        print(f"before: {data}")
         data["user"] = user.id
         category = DiseaseStateCategoryModel.get_by_name_disease(request.data.get("category"))
         spec = Specialist.objects.filter(is_active=True, tag=category.id).first()
-        obj = Chat.objects.create(doctor_id=spec.user, patient_id=user_id, is_active=True)
-        obj.save()
 
         data["category"] = category.id
         data["specialist"] = spec.id
-        print(f"after: {data}")
 
         serializer = ComplainSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
+            obj = Chat.objects.create(doctor_id=spec.user, patient_id=user_id, is_active=True,
+                                      complain_id=serializer.data.get("id"))
+            obj.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         else:
@@ -179,6 +181,16 @@ class ChatList(ViewSet):
     def retrieve(self, request, pk=None):
         messages = Chat.objects.filter(doctor_id=pk).order_by("-created_at")
         return Response(ChatSerializers(messages, many=True).data, status=status.HTTP_200_OK)
+
+
+class HistoryComplain(ViewSet):
+    def retrieve(self, request, pk=None):
+        user = UserModel.get_by_user_id(user_id=pk)
+        complain_objs = Complain.objects.filter(user=user.id)
+        lst = [{"text": complain_obj.category.name_disease, "url": Chat.get_by_complain(complain_obj.id).id} for
+               complain_obj in complain_objs]
+
+        return Response(lst, status=status.HTTP_200_OK)
 
 
 def chat_view(request):

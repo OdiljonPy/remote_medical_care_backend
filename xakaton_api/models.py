@@ -99,10 +99,16 @@ class EmergenciesHistory(models.Model):
 class Chat(models.Model):
     doctor_id = models.IntegerField(default=0)
     patient_id = models.IntegerField(default=0)
+    complain = models.OneToOneField(Complain, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @staticmethod
+    def get_by_complain(complain_id: int):
+        obj = Chat.objects.filter(complain=complain_id).first()
+        return obj
 
     def __str__(self):
         return f"Chat_id: {self.id}"

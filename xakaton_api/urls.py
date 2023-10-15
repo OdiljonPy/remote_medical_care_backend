@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework import routers
 from .views import CreateUser, EmergenciesViewSet, DiseaseStateViewSet, ComplainViewSet, get_by_list, \
-    EmergenciesHistoryViewSet, voice_or_text, MessagesViewSet, ChatList
+    EmergenciesHistoryViewSet, voice_or_text, MessagesViewSet, ChatList, HistoryComplain
 
 router = routers.DefaultRouter()
 router.register('user', CreateUser, "user")
@@ -11,6 +11,7 @@ router.register('complain', ComplainViewSet, "complain")
 router.register('history', EmergenciesHistoryViewSet, "history")
 router.register('messages', MessagesViewSet, "messages")
 router.register('chat', ChatList, "chat")
+router.register('historycomplain', HistoryComplain, "HistoryComplain")
 
 urlpatterns = [
     path("ttb/<str:name>/", get_by_list),
