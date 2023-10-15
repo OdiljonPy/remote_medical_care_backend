@@ -160,7 +160,7 @@ class MessagesViewSet(ViewSet):
 
         if serializer.is_valid():
             serializer.save()
-            messages = MessagesModel.objects.filter(chat=serializer.data.get("chat"))
+            messages = MessagesModel.objects.filter(chat=serializer.data.get("chat")).order_by("created_at")
             return Response(MessagesModelSerializers(messages, many=True).data, status=status.HTTP_201_CREATED)
 
         else:
@@ -171,7 +171,7 @@ class MessagesViewSet(ViewSet):
         responses={200: MessagesModelSerializers(many=True)},
     )
     def retrieve(self, request, pk=None):
-        messages = MessagesModel.objects.filter(chat=pk).order_by("-created_at")
+        messages = MessagesModel.objects.filter(chat=pk).order_by("created_at")
         return Response(MessagesModelSerializers(messages, many=True).data, status=status.HTTP_200_OK)
 
 
