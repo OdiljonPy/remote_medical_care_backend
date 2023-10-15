@@ -110,6 +110,10 @@ class ComplainViewSet(ViewSet):
             obj = Chat.objects.create(doctor_id=spec.user, patient_id=user_id, is_active=True,
                                       complain_id=serializer.data.get("id"))
             obj.save()
+            massage = MessagesModel.objects.create(author=user_id,
+                                                   text=f"category :{serializer.data.get('text')}, \nanalizlar:{serializer.data.get('analizlar')}",
+                                                   chat=obj)
+            massage.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         else:

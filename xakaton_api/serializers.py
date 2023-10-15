@@ -30,7 +30,7 @@ class DiseaseStateCategoryModelSerializer(serializers.ModelSerializer):
 class ComplainSerializer(serializers.ModelSerializer):
     class Meta:
         model = Complain
-        fields = ["id", "user", "category", "specialist"]
+        fields = ["id", "user", "category", "text", "analizlar", "specialist"]
 
 
 class SpecialistSerializer(serializers.ModelSerializer):
