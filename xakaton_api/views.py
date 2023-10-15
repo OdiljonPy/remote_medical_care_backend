@@ -160,7 +160,8 @@ class MessagesViewSet(ViewSet):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            messages = MessagesModel.objects.filter(chat=serializer.data.get("chat"))
+            return Response(MessagesModelSerializers(messages, many=True).data, status=status.HTTP_201_CREATED)
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
